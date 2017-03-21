@@ -213,7 +213,7 @@ learnjs.awsRefresh = function() {
     if(err) {
       deferred.reject(err);
     } else {
-      deferred.resolve(AWS.config.credentials.indentityId);
+      deferred.resolve(AWS.config.credentials.identityId);
     }
   });
   return deferred.promise();
