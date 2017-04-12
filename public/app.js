@@ -133,8 +133,18 @@ learnjs.problemView = function(data) {
   var answer = view.find('.answer');
 
   function checkAnswer() {
-    var test = problemData.code.replace('__', answer.val()) + '; problem();';
-    return eval(test);
+    var def = $.Deferred();
+    var test = problemData.code.replace('__', answer.val()) + ';problem();';
+    var worker = new Worker('worker.js');
+    worker.onmessage = function(e) {
+      if (e.data) {
+        def.resolve(e.data);
+      } else {
+        def.reject();
+      }
+      worker.postMessage(test);
+      return def;
+    }
   }
 
   function checkAnswerClick() {
@@ -147,7 +157,7 @@ learnjs.problemView = function(data) {
     }
     return false;
   }
-  
+
   if(problemNumber < learnjs.problems.length) {
     var buttonItem = learnjs.template('skip-btn');
     buttonItem.find('a').attr('href', '#problem-' + (problemNumber +1));
