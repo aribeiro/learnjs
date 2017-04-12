@@ -148,13 +148,13 @@ learnjs.problemView = function(data) {
   }
 
   function checkAnswerClick() {
-    if(checkAnswer()) {
+    checkAnswer().done(function(){
       var flashContent = learnjs.buildCorrectFlash(problemNumber);
       learnjs.flashElement(resultFlash, flashContent);
       learnjs.saveAnswer(problemNumber, answer.val());
-    } else {
+    }).fail(function() {
       learnjs.flashElement(resultFlash, 'Incorrect!');
-    }
+    });
     return false;
   }
 
