@@ -90,14 +90,14 @@ describe('LearnJS', function() {
       dbspy = jasmine.createSpyObj('db', ['put']);
       dbspy.put.and.returnValue('request');
       spyOn(AWS.DynamoDB,'DocumentClient').and.returnValue(dbspy);
-      spyOn(learnjs, 'sendDbRequest');
+      spyOn(learnjs, 'sendAwsRequest');
       identityObj = {id: 'COGNITO_ID'};
       learnjs.identity.resolve(identityObj);
     });
 
     it('writes the item to the database', function() {
       learnjs.saveAnswer(1, {});
-      expect(learnjs.sendDbRequest).toHaveBeenCalledWith('request', jasmine.any(Function));
+      expect(learnjs.sendAwsRequest).toHaveBeenCalledWith('request', jasmine.any(Function));
       expect(dbspy.put).toHaveBeenCalledWith({
         TableName: 'learnjs',
         Item: {
@@ -111,12 +111,12 @@ describe('LearnJS', function() {
     it('resubmits the request on retry', function() {
       learnjs.saveAnswer(1, {answer: 'false'});
       spyOn(learnjs, 'saveAnswer').and.returnValue('promise');
-      expect(learnjs.sendDbRequest.calls.first().args[1]()).toEqual('promise');
+      expect(learnjs.sendAwsRequest.calls.first().args[1]()).toEqual('promise');
       expect(learnjs.saveAnswer).toHaveBeenCalledWith(1, {answer: 'false'});
     });
   });
 
-  describe('sendDbRequest', function() {
+  describe('sendAwsRequest', function() {
     var request, requestHandlers, promise, retrySpy;
     beforeEach(function() {
       requestHandlers = {};
@@ -125,7 +125,7 @@ describe('LearnJS', function() {
         requestHandlers[eventName] = callback;
       });
       retrySpy = jasmine.createSpy('retry');
-      promise = learnjs.sendDbRequest(request, retrySpy);
+      promise = learnjs.sendAwsRequest(request, retrySpy);
     });
 
     it('resolves the returned promise on success', function(done) {
