@@ -167,7 +167,6 @@ learnjs.problemView = function(data) {
     });
   }
 
-  debugger;
   learnjs.fetchAnswer(problemNumber).then(function(data) {
     if(data.Item) {
       answer.val(data.Item.answer);
@@ -236,8 +235,8 @@ learnjs.popularAnswers = function(problemId) {
       FunctionName: 'learnjs_popularAnswers',
       Payload: JSON.stringify({problemNumber: problemId})
     };
-    return learnsjs.sendAwsRequest(lambda.invoke(params), function() {
-      return learnjs.popularAnswer(problemId);
+    return learnjs.sendAwsRequest(lambda.invoke(params), function() {
+      return learnjs.popularAnswers(problemId);
     });
   });
 }
